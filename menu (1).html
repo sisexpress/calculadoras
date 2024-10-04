@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web App</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    /* Estilo para o menu lateral */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 250px;
+      background-color: #343a40;
+      padding-top: 20px;
+      transition: width 0.3s;
+    }
+
+    .sidebar:hover {
+      width: 300px;
+    }
+
+    .logo img {
+      display: block;
+      margin: 0 auto 30px;
+    }
+
+    .nav-item {
+      margin-bottom: 10px;
+    }
+
+    .nav-link {
+      color: #fff;
+      padding: 10px 20px;
+      text-decoration: none;
+      display: block;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .nav-link:hover {
+      background-color: #495057;
+      border-radius: 5px;
+    }
+
+    .submenu {
+      display: none;
+      padding-left: 20px;
+    }
+
+    .nav-link::after {
+      content: '\25B8'; /* Unicode para o ícone de seta para a direita */
+      float: right;
+    }
+
+    .nav-link.open::after {
+      content: '\25BE'; /* Unicode para o ícone de seta para baixo */
+    }
+
+    .submenu li {
+      margin-bottom: 10px;
+    }
+
+    .submenu a {
+      color: #adb5bd;
+    }
+
+    .submenu a:hover {
+      color: #fff;
+    }
+
+    .container-fluid {
+      margin-left: 250px; /* Largura do menu lateral */
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="sidebar">
+        <div class="logo">
+          <img src="./acrox-bank.png" alt="Logo">
+        </div>
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="#importacoes">Importações</a>
+            <ul class="submenu">
+              <li><a href="edfimportprod.html">Importar Produtos</a></li>
+              <li><a href="edfimportfiscal.html">Importar Fiscal</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#consultas">Consultas</a>
+            <ul class="submenu">
+              <li><a href="dadosimportados.html">Dados Importados</a></li>
+             </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#calculadora">Calculadora</a>
+            <ul class="submenu">
+              <li><a href="calculadora.html">Calculadora Interna</a></li>
+              <li><a href="https://cadastros-contrato-bacrox.flutterflow.app/frmCalcuadora">Calculadora Externa</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="logoutButton" href="#">Sair</a> <!-- Adicione o id logoutButton -->
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <!-- Conteúdo da página aqui -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // Aguarda o carregamento completo do DOM antes de inicializar o Supabase e os eventos
+  document.addEventListener('DOMContentLoaded', () => {
+    // Inicializa o Supabase
+    const supabaseUrl = 'https://crdcprkalnmiwlvgsbvp.supabase.co'; // Substitua pela URL do seu projeto Supabase
+    const supabaseKey = 'your-supabase-anon-key'; // Substitua pela sua chave correta do Supabase
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Inicializa a navegação com jQuery
+    $(document).ready(function() {
+      $('.nav-link').click(function() {
+        var submenu = $(this).siblings('.submenu');
+        $('.submenu').not(submenu).slideUp();
+        submenu.slideToggle();
+        $('.nav-link').not($(this)).removeClass('open');
+        $(this).toggleClass('open');
+      });
+
+      // Adiciona o evento de logout ao botão de sair
+      document.getElementById('logoutButton').addEventListener('click', async () => {
+        const { error } = await supabase.auth.signOut();
+        if (!error) {
+          window.location.href = 'index.html'; // Redireciona para a página de login após logout
+        } else {
+          alert('Erro ao sair: ' + error.message);
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
